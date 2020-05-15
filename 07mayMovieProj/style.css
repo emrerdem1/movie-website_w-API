@@ -1,0 +1,99 @@
+#movie-backdrop {
+	width: 100%;
+}
+
+.container {
+	padding-top: 32px;
+}
+
+#actors {
+	margin: 24px 16px 0 0;
+}
+
+.editContainer {
+	width: 90%;
+	z-index: 1;
+}
+header {
+	height: 95px;
+}
+.row div div img {
+	width: 100%;
+	transition: all .5s;
+}
+.for-each-movie {
+	width: 100%;
+}
+.for-each-movie div {
+	filter: brightness(1);
+	overflow: hidden;
+	border-radius: 3%;
+}
+.for-each-movie div:hover img {
+	transform: scale(1.1);
+	filter: brightness(1.2) contrast(1.07);
+}
+.for-each-movie div:hover {
+	box-shadow: 0px 0px 20px -2px rgba(0, 0, 0, 0.69);
+}
+.row .for-each-movie .movie-title {
+	padding-top: 5px;
+	min-height: 20px;
+}
+header .navbar {
+	height: 70px;
+}
+.collapse {
+	z-index: 10;
+}
+.nav-item {
+	text-align: center;
+	font-size: 110%;
+}
+.nav-search {
+	text-align: center;
+}
+.collapse-show nav-item {
+	border-bottom: 1px solid white;
+}
+.dropdown-toggle {
+	background-color: #343a40 !important;
+	color: rgba(255, 255, 255, 0.5);
+	border: none;
+	padding: 8px;
+}
+footer .nav-item-nested img {
+	width: 40px;
+}
+footer {
+	height: 100px;
+}
+.gitLogo {
+	filter: drop-shadow(0px 0px 1px rgba(255, 255, 255, 0.3));
+}
+.footerCredits {
+	color: rgba(255, 255, 255, .7);
+}
+.footerCredits p {
+	font-size: 90%;
+	margin: 0;
+}
+
+@media (max-width: 576px) {
+	.footerCredits p {
+		font-size: 70%;
+	}
+	footer .nav-item-nested img {
+		width: 35px;
+	}
+}
+@media (max-width: 430px) {
+	footer .nav-item-nested img {
+		width: 28px;
+	}
+}
+@media (max-width: 318px) {
+	.footerCredits p {
+		font-size: 60%;
+	}
+}
