@@ -137,7 +137,16 @@ const movieDetails = async (movie) => {
 	// function to create a page with details for each movie
 	renderMovie(movieRes, movieCredit, movieSimilar, movieTrailer);
 };
-
+const callGenres = async () => {
+	const movieGenreList = await fetchGenres(`genre/movie/list`);
+	setSections(movieGenreList);
+};
+const fetchGenres = async () => {
+	//const movieGenreList = await fetchMovie(`genre/movie/list`);
+	const url = constructUrl(`genre/movie/list`);
+	const res = await fetch(url);
+	return res.json();
+};
 // This function is to fetch movies. You may need to add it or change some part in it in order to apply some of the features.
 const fetchMovies = async () => {
 	const url = constructUrl(`movie/now_playing`);
@@ -194,6 +203,7 @@ const renderMovies = (movies) => {
 const renderMovie = (movie, movieCredit, movieSimilar, movieTrailer) => {
 	// creating a list of top 5 actors in the movie
 	let main_5_actors = [];
+	console.log('THIS IS MOVIE ' + movie);
 	movieCredit.cast.map((actor) => {
 		if (actor['order'] < 6) {
 			const genres = movie.genres.map((dt) => dt.name);
@@ -237,10 +247,9 @@ const renderMovie = (movie, movieCredit, movieSimilar, movieTrailer) => {
 		ADDTRAILER.push(obj2);
 	});
 	//movie hover-overview
-	const { overview, vote_average, release_date } = movies;
+	//const { overview, vote_average, release_date } = movies;
 	//https://api.themoviedb.org/3/person/3/movie_credits?api_key=542003918769df50083a13c415bbc602&language=en-US
-	/*
-    creating list of main 5 actor, add event listener to creat a page of each of them and append all of those to our HTML
+	/*creating list of main 5 actor, add event listener to creat a page of each of them and append all of those to our HTML
     */
 	const setActorPage = () => {
 		for (let i = 0; i < main_5_actors.length; i++) {
@@ -250,19 +259,28 @@ const renderMovie = (movie, movieCredit, movieSimilar, movieTrailer) => {
 			);
 		}
 	};
+	//single movie page html
+
+	CONTAINER.classList.add('w-100');
 	CONTAINER.innerHTML = `
     <div class="row">
-        <div class="col-md-4">
-             <img id="movie-backdrop" src=${BACKDROP_BASE_URL + movie.backdrop_path}>
+        <div class="col-12 bg-image m-0 p-0">
+             <div id="movie-backdrop" style="background-image: url('${BACKDROP_BASE_URL +
+					movie.backdrop_path}');"></div>
         </div>
-        <div class="col-md-8">
+        <div class="col-2 offset-1">
+        <div class="left-movie-poster">
+        <img src="${BACKDROP_BASE_URL + movie.poster_path}" alt="${movie.name}"></div>
+        </div>
+        <div class="col-8">
             <h2 id="movie-title">${movie.title}</h2>
             <p id="movie-release-date"><b>Release Date:</b> ${movie.release_date}</p>
             <p id="movie-runtime"><b>Runtime:</b> ${movie.runtime} Minutes</p>
             <h3>Overview:</h3>
             <p id="movie-overview">${movie.overview}</p>
         </div>
-        </div>
+        <div class="row">
+          <div class="col-12">
             <h3>Actors:</h3>
             <ul id="actors" class="list-unstyled">
             <li class="actors-list">
@@ -273,7 +291,9 @@ const renderMovie = (movie, movieCredit, movieSimilar, movieTrailer) => {
                 <li><a href="#" id="actor3" class="actor-single-page">${main_5_actors[3].name}</a></li>
                 <li><a href="#" id="actor4" class="actor-single-page">${main_5_actors[4].name}</a></li>
               </ul>
-            </li><br>
+            </li></ul></div>
+
+            <div class="col-12">
             <li class="lang-item">
             <h3>Language: ${language}</h3>
             </li>
@@ -286,13 +306,14 @@ const renderMovie = (movie, movieCredit, movieSimilar, movieTrailer) => {
             <img src="${BACKDROP_BASE_URL + directorOBJ.profile_path}" alt="company-logo"></li>
             <li class="related-movies">
             </li>
-            <li class="movie-trailer">
+            <div class="singleMovie-trailer">
+              <li class="movie-trailer">
               <div>
               <iframe width="400" height="auto" src="https://www.youtube.com/embed/${ADDTRAILER[0]
 					.key}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
               <p class="trailer-title">${ADDTRAILER[0].name}</p>
             </li>
-            </ul>
+            
     </div>`;
 
 	setActorPage();
@@ -315,7 +336,8 @@ const renderMovie = (movie, movieCredit, movieSimilar, movieTrailer) => {
 */
 
 // function to build the structure of HTML body
-const setSections = () => {
+callGenres();
+const setSections = async (genreList) => {
 	// selecting the body of HTML
 	const body = document.body;
 	// creating and setting the nav bar
@@ -327,7 +349,7 @@ const setSections = () => {
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse px-0 bg-dark position-relative pr-2" id="openMenu">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto topNavbar">
             </ul>
         </div>
     </nav>`;
@@ -347,9 +369,9 @@ const setSections = () => {
 		navList.classList.add('ml-2', 'mr-3');
 		navList.setAttribute('id', `nav-item${i + 1}`);
 		navList.innerHTML = `<a href="${anchorArr1[i]}" class="nav-link">${navArr[i]}</a>`;
-		document.querySelector('.navbar-nav').appendChild(navList);
+		document.querySelector('.topNavbar').appendChild(navList);
 	}
-	document.querySelector('.navbar-nav').appendChild(searchBar);
+	document.querySelector('.topNavbar').appendChild(searchBar);
 	//movie genres list
 	let navMovies = document.querySelector('#nav-item2');
 	navMovies.classList.add('dropdown');
@@ -359,6 +381,17 @@ const setSections = () => {
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
   </div>`;
+	//<a class="dropdown-item" href="#">Action</a>
+	let genreHolder = genreList.genres;
+	genreHolder.map((item, index) => {
+		let [ genId, genName ] = Object.entries(item).map((i) => i[1]);
+		let tempCreate = document.createElement('a');
+		tempCreate.setAttribute('id', `${genId}`);
+		tempCreate.classList.add('dropdown-item');
+		tempCreate.innerHTML = genName;
+		document.querySelector('.dropdown-menu').appendChild(tempCreate);
+	});
+
 	//add dropdown items
 	//<a class="dropdown-item" href="#">Action</a>
 	//get movie genres from: /genre/movie/list
@@ -373,35 +406,35 @@ const setSections = () => {
 	footer.setAttribute('class', 'container-fluid');
 	footer.classList.add('font-small', 'bg-dark');
 
-	[ 'https://github.com/maher-suleyman', 'https://github.com/emrerdem1' ];
-
 	footer.innerHTML = `<nav class="navbar navbar-dark bg-dark d-flex justify-content-center h-100 p-0 flex-column">
   <ul class="navbar-nav flex-row w-75 justify-content-center align-items-center">
     <li class="nav-item p-1 pr-2">
         <ul class="navbar-nav flex-row">
         <li class="nav-item nav-item-nested">
-          <a href="#" class="navbar-brand  mx-1">
+          <a href="https://github.com/maher-suleyman" class="navbar-brand  mx-1">
           <img class="gitLogo" src="./hex_github.svg" alt="github icon"></a>
             </li>
         <li class="nav-item nav-item-nested">
-          <a href="#" class="navbar-brand  mx-1">
+          <a href="" class="navbar-brand  mx-1">
         <img src="./hex_linkedin.svg" alt="linkedin icon"></a>
         </li></ul></li>
     <li class="nav-item p-1 footerCredits"><p>The movie project made by <span class="maher">Maher</span> and <span class="emre">Emre</span> out of <img src="#" alt="<3"></p></li>
     <li class="nav-item p-1 pl-2">
           <ul class="navbar-nav flex-row">
           <li class="nav-item nav-item-nested">
-            <a href="#" class="navbar-brand  mx-1">
+            <a href="https://github.com/emrerdem1" class="navbar-brand  mx-1">
             <img class="gitLogo" src="./hex_github.svg" alt="github icon"></a>
               </li>
           <li class="nav-item nav-item-nested">
-            <a href="#" class="navbar-brand  mx-1">
+            <a href="https://www.linkedin.com/in/emrerdem94/" class="navbar-brand  mx-1">
           <img src="./hex_linkedin.svg" alt="linkedin icon"></a>
               </li></ul></li></li>
     </nav>`;
-	body.insertBefore(footer, body.children[2]);
+	//body.insertBefore(footer, body.children[2]);
+	let tempCONTAINER = document.querySelector('.editContainer');
+	body.insertBefore(footer, tempCONTAINER.nextSibling);
 };
-setSections();
+//setSections();
 
 //actor, trailers, details in moviepage
 
