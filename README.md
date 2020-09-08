@@ -106,9 +106,3 @@ credits in the single movie page.
 - The birthday of the actor and (if available) death day
 - A biography about the actor
 - A list of movies the actor participated in
-
-## Bonus
-
-If you finish early you can work on the same functionalities, but for TV shows.
-Your code should be completely reusable (e.g., don't just copy paste a second
-copy of the files).
