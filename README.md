@@ -9,18 +9,14 @@ data.
 # Live Demo
 [The Movie DB](https://themoviedb-api.netlify.app/)
 
-# Already built for you
+## Features
 
-- A home page that shows popular movies
-- When you click one of the movies, you'll see the Single Movie page, which includes:
-  - Movie poster
-  - Movie title
-  - Movie release date
-  - Movie runtime
-  - Movie description
-  - An empty cast section
-
-# What you and your partner will build
+* Fetch and list popular movies
+* Search movies by title
+* Go to detailed info of movie `onClick`
+* Go to detailed info of cast from `Single Movie Page`
+* List the movies of actor/actress/director
+* View detail movie info including poster, casts, trailers
 
 ## Homepage
 
